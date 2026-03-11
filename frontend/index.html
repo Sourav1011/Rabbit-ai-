@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabbit AI - Simple Frontend</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Rabbit AI 🔺</h1>
+        <p>This is a simple one-page frontend for the Rabbit AI project.</p>
+        <form id="uploadForm">
+            <label for="fileInput">Select file to upload:</label>
+            <input type="file" id="fileInput" name="file" required>
+            <label for="emailInput">Your email:</label>
+            <input type="email" id="emailInput" name="email" placeholder="you@example.com" required>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) return;
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const emailValue = document.getElementById('emailInput').value;
+            formData.append('email', emailValue);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Uploading...';
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultDiv.textContent = 'Error: ' + err.message;
+            }
+        });
+    </script>
+</body>
+</html>
